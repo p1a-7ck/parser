@@ -16,7 +16,7 @@ public class PartTest {
 
         Part part = Part.create("Word", rule);
         part.addChild(Part.create("W", ruleElse));
-        
+
     }
 
 }
