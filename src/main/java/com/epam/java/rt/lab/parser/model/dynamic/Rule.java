@@ -14,6 +14,8 @@ public class Rule {
     private static final Logger LOGGER_RULE = LoggerFactory.getLogger(Rule.class);
     private String name;
     private Rule parent;
+    private Rule startsWith;
+    private Rule endsWith;
     private Pattern patternStart, patternEnd;
     private List<Rule> rules = new ArrayList<>();
 
@@ -53,6 +55,32 @@ public class Rule {
             LOGGER_RULE.info("Rule parent set to '{}'", parent);
         } else {
             LOGGER_RULE.warn("Rule parent should be set only once");
+        }
+    }
+
+    public Rule getStartsWith() {
+        return startsWith;
+    }
+
+    public void setStartsWith(Rule startsWith) {
+        if (this.startsWith == null) {
+            this.startsWith = startsWith;
+            LOGGER_RULE.info("Rule startsWith set to '{}'", startsWith);
+        } else {
+            LOGGER_RULE.warn("Rule startsWith should be set only once");
+        }
+    }
+
+    public Rule getEndsWith() {
+        return endsWith;
+    }
+
+    public void setEndsWith(Rule endsWith) {
+        if (this.endsWith == null) {
+            this.endsWith = endsWith;
+            LOGGER_RULE.info("Rule endsWith set to '{}'", endsWith);
+        } else {
+            LOGGER_RULE.warn("Rule endsWith should be set only once");
         }
     }
 
