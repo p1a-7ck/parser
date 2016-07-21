@@ -1,4 +1,4 @@
-package com.epam.java.rt.parser;
+package com.epam.java.rt.lab.parser;
 
 /**
  * parser

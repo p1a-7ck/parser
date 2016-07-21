@@ -1,4 +1,4 @@
-package com.epam.java.rt.parser.model;
+package com.epam.java.rt.lab.parser.model.legacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

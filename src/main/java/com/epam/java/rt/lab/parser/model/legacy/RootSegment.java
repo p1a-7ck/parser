@@ -1,10 +1,9 @@
-package com.epam.java.rt.parser.model;
+package com.epam.java.rt.lab.parser.model.legacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,7 +38,7 @@ public class RootSegment implements ParseRuleContainable, SegmentContainable {
     public void setBaseName(String baseName) {
         if (this.baseName == null) {
             this.baseName = baseName;
-            ROOT_SEGMENT_LOGGER.info("RootSegment baseName set to '{}'", baseName);
+            ROOT_SEGMENT_LOGGER.info("RootSegment baseName set of '{}'", baseName);
         }
     }
 

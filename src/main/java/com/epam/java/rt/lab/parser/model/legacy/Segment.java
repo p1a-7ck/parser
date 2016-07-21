@@ -1,4 +1,4 @@
-package com.epam.java.rt.parser.model;
+package com.epam.java.rt.lab.parser.model.legacy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class Segment implements SegmentContainable {
     public Segment(ParseRule parseRule) {
         this.parseRule = parseRule;
         this.childSegments = new ArrayList<>();
-        SEGMENT_LOGGER.info("Segment constructed (parseRule = {})", parseRule);
+        SEGMENT_LOGGER.info("CompoundComponent constructed (parseRule = {})", parseRule);
     }
 
     public ParseRule getParseRule() {
@@ -59,7 +59,7 @@ public class Segment implements SegmentContainable {
 
     @Override
     public String toString() {
-        return "Segment{" +
+        return "CompoundComponent{" +
                 "start='" + this.start + '\'' +
                 ", end='" + this.end + '\'' +
                 '}';

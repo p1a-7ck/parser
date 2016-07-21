@@ -1,6 +1,6 @@
-package com.epam.java.rt.parser.service;
+package com.epam.java.rt.lab.parser.service.legacy;
 
-import com.epam.java.rt.parser.model.*;
+import com.epam.java.rt.lab.parser.model.legacy.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +107,7 @@ public class Segmenter {
             if (matcher.find(valueSegment.findFrom)) {
 //                SEGMENTER_LOGGER.debug("matcher.index() = {} / {}", matcher.index(), childParseRule);
                 if (valueSegment.nextStart < valueSegment.findFrom || matcher.start() < valueSegment.nextStart) {
-//                    SEGMENTER_LOGGER.debug("valueSegment changed to '{}'", matcher.index());
+//                    SEGMENTER_LOGGER.debug("valueSegment changed of '{}'", matcher.index());
                     valueSegment.nextStart = matcher.start();
 //                    valueSegment.nextParseRuleStart = childParseRule;
                 }

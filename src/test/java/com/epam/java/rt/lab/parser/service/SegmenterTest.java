@@ -1,6 +1,8 @@
-package com.epam.java.rt.parser.service;
+package com.epam.java.rt.lab.parser.service;
 
-import com.epam.java.rt.parser.model.RootSegment;
+import com.epam.java.rt.lab.parser.model.legacy.RootSegment;
+import com.epam.java.rt.lab.parser.service.legacy.ParseRuleReader;
+import com.epam.java.rt.lab.parser.service.legacy.SegmenterO;
 import org.junit.Test;
 
 /**

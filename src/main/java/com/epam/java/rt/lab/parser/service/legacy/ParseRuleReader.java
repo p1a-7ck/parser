@@ -1,8 +1,8 @@
-package com.epam.java.rt.parser.service;
+package com.epam.java.rt.lab.parser.service.legacy;
 
-import com.epam.java.rt.parser.model.ParseRule;
-import com.epam.java.rt.parser.model.ParseRuleContainable;
-import com.epam.java.rt.parser.model.RootSegment;
+import com.epam.java.rt.lab.parser.model.legacy.ParseRule;
+import com.epam.java.rt.lab.parser.model.legacy.ParseRuleContainable;
+import com.epam.java.rt.lab.parser.model.legacy.RootSegment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
