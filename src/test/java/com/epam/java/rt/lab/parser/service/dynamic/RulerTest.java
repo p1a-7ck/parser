@@ -17,5 +17,6 @@ public class RulerTest {
         Ruler.from("rules.properties").setRules(text);
         assertNotNull(text.getRule());
         assertTrue(text.getRule().countRules() > 0);
+        System.out.println(text.getRule().toDetails(new StringBuilder()));
     }
 }

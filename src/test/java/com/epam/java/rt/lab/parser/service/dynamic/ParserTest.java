@@ -13,7 +13,13 @@ public class ParserTest {
     public void initialTest() {
         Composite text = new Text();
         Ruler.from("rules.properties").setRules(text);
-        Parser.to(text).parseFile("source.txt");
+        System.out.println(text.getRule().toDetails(new StringBuilder()));
+        try {
+            Parser.to(text).parse("one two three four five six seven eight nine ten");
+        } catch (Exception exc) {
+            System.out.println(text.compose(new StringBuilder()));
+        }
+//        Parser.to(text).parseFile("source.txt");
 
     }
 

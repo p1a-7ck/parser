@@ -136,4 +136,13 @@ public class Rule {
                 ", rules=" + this.rules.size() +
                 '}';
     }
+
+    public StringBuilder toDetails(StringBuilder sb) {
+        sb.append("Rule{name='").append(this.name).append("' rules=[");
+        for (int i = 0; i < this.rules.size(); i++) {
+            this.rules.get(i).toDetails(sb);
+        }
+        sb.append("]}");
+        return sb;
+    }
 }

@@ -1,17 +1,12 @@
 package com.epam.java.rt.lab.parser.service.dynamic;
 
-import com.epam.java.rt.lab.parser.model.dynamic.Component;
-import com.epam.java.rt.lab.parser.model.dynamic.Composite;
-import com.epam.java.rt.lab.parser.model.dynamic.ElementaryComponent;
-import com.epam.java.rt.lab.parser.model.dynamic.Rule;
+import com.epam.java.rt.lab.parser.model.dynamic.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
@@ -48,58 +43,103 @@ public class Parser {
 
     public void parse(String source) {
         this.source = source;
-        NextComponent nextComponent = new NextComponent();
-        nextComponent.parentRule = this.composite.getRule();
-        nextComponent.composite = this.composite;
-//        patternedRules(this.composite.getRule(), nextComponent);
-//        while (nextComponent.findFrom < this.source.length())
-            nextParse(nextComponent);
+        Result result = new Result();
+        result.findIndex = 0;
+        result.foundIndex = -1;
+        result.parentComposite = this.composite;
+        result.parentRule = this.composite.getRule();
+        tryParse(result);
+
     }
 
-//    private void patternedRules(Rule parentRule, NextComponent nextComponent) {
-//        if (parentRule.countRules() > 0) {
-//            for (int i =0; i < parentRule.countRules(); i++)
-//                patternedRules(parentRule.getRule(i), nextComponent);
-//        } else {
-//            nextComponent.rules.add(parentRule);
-//            if (parentRule.getEndsWith() != null)
-//                nextComponent.ruleEndsWith = parentRule.getEndsWith();
-//        }
-//    }
+    private void tryParse(Result result) {
+        /*
+            a)  checking for startsWith-rule
 
-    private void nextParse(NextComponent nextComponent) {
-        // parse checking child rules patterns
-        LOGGER_PARSER.debug("nextParse: {}", nextComponent);
-        nextComponent.reset();
-        nextStartElementary(nextComponent);
-        if (nextComponent.tempStart == -1)
-            LOGGER_PARSER.debug("nextStartElementary - found");
-            if (nextComponent.tempStart > nextComponent.findFrom) {
-                // there are some missing components
-                Rule childRule;
-                for (int i = 0; i < nextComponent.parentRule.countRules(); i++) {
-                    childRule = nextComponent.parentRule.getRule(i);
-                    NextComponent nextComponentChild =  new NextComponent();
-                    nextComponentChild.findFrom = nextComponent.findFrom;
-                    nextComponentChild.parentRule = childRule;
-//                    nextComponentChild.composite = (Composite)
-                    nextParse(nextComponentChild);
-                    if (nextComponentChild.findFrom > nextComponent.findFrom)
-                        break;
+            b)  if startsWith-rule is null or found correctly, then trying to parse
+                by childRules with setting current rule and current composite as a parent
+                for children
+
+            c)  if childRules return positive parse, then append current composite
+                to parent composite, trying to parse next childRules, return positive
+                to parent tryParse
+
+            d)  if childRules return negative parse, then remove current composite
+                and return negative to parent tryParse
+
+            base fields for result:
+                parent composite    - upper level composite
+                parent rule         - upper level rule
+                current rule        - created composite for lower level
+                current composite   - created rule for lower level
+                find index          - index from which starts search (find)
+                found index         - index where requested pattern matches
+         */
+        LOGGER_PARSER.debug("tryParse: {}", result);
+        boolean tryParseChild = true;
+        // a)
+        if (result.parentRule.getStartsWith() != null) {
+            LOGGER_PARSER.debug("getStartsWith != null ({})", result.parentRule);
+            tryParseChild = nextRuleComponent(result.parentRule.getStartsWith(), result);
+        }
+        if (tryParseChild) {
+            // b)
+            LOGGER_PARSER.debug("tryParseChild = true");
+            Rule childRule;
+            do {
+                LOGGER_PARSER.debug("do-while");
+                for (int i = 0; i < result.parentRule.countRules(); i++) {
+                    childRule = result.parentRule.getRule(i);
+                    LOGGER_PARSER.debug("childRule set to parentRule.getRule({}) = {}", i, childRule);
+                    if (childRule.countRules() == 0) {
+                        LOGGER_PARSER.debug("childRule.countRules() = 0");
+                        nextRuleComponent(childRule, result);
+                    } else {
+                        Result childResult = new Result();
+                        childResult.findIndex = result.findIndex;
+                        childResult.parentRule = childRule;
+                        childResult.parentComposite = new CompoundComponent(childRule);
+                        LOGGER_PARSER.debug("childResult = ({})", childResult);
+                        tryParse(childResult);
+                        if (result.findIndex < childResult.findIndex) {
+                            // c)
+                            LOGGER_PARSER.debug("childResult positive (findIndex = {})", childResult.findIndex);
+                            result.parentComposite.add((Component) childResult.parentComposite);
+                            result.findIndex = childResult.findIndex;
+                            result.foundIndex = childResult.foundIndex;
+                        }
+                    }
                 }
+            } while (result.findIndex < result.foundIndex);
+        }
+    }
+
+    private boolean nextRuleComponent(Rule rule, Result result) {
+        /*
+
+         */
+        Matcher matcher = rule.getPatternStart().matcher(this.source);
+        if (matcher.find(result.findIndex)) {
+            result.foundIndex = matcher.start();
+            if (result.findIndex < result.foundIndex)
+                LOGGER_PARSER.warn("Parser found some missing/un-parsable string ({})", this.source.substring(result.findIndex, result.foundIndex));
+            result.findIndex = result.foundIndex;
+            matcher = rule.getPatternEnd().matcher(this.source);
+            if (matcher.find(result.findIndex)) {
+                result.foundIndex = matcher.start();
+                result.createdComponent = new ElementaryComponent(rule);
+                result.createdComponent.addChars(this.source.substring(result.findIndex, result.foundIndex).toCharArray());
+                result.parentComposite.add(result.createdComponent);
+                LOGGER_PARSER.info("Component '{}' created and added to '{}'", result.createdComponent, result.parentComposite);
+                return true;
             } else {
-                // starts from findFrom
-                nextEndElementary(nextComponent);
-                if (nextComponent.tempEnd != -1) {
-                    LOGGER_PARSER.debug("nextEndElementary - found");
-                    // component found
-                    Component component = new ElementaryComponent();
-                    component.addChars(this.source.
-                            substring(nextComponent.resultStart, nextComponent.resultEnd).toCharArray());
-                    component.setRule(nextComponent.resultRule);
-                    nextComponent.composite.add(component);
-                }
+                throw new IllegalStateException("Parse error end-pattern not found (" +
+                        this.source.substring(result.findIndex, result.findIndex + 15) + ")");
             }
+        } else {
+            result.foundIndex = -1;
+        }
+        return false;
     }
 
     private void nextStartElementary(NextComponent nextComponent) {
@@ -114,11 +154,13 @@ public class Parser {
             }
         } else {
             if (nextComponent.parentRule.getEndsWith() != null) {
-                matcher = nextComponent.parentRule.getEndsWith().
-                        getPatternStart().matcher(this.source);
-                if (matcher.find(nextComponent.findFrom)) {
-                    nextComponent.tempStart = matcher.start();
-                    nextComponent.tempRule = nextComponent.parentRule.getEndsWith();
+                if (nextComponent.parentRule.getEndsWith().getPatternStart() != null) {
+                    matcher = nextComponent.parentRule.getEndsWith().
+                            getPatternStart().matcher(this.source);
+                    if (matcher.find(nextComponent.findFrom)) {
+                        nextComponent.tempStart = matcher.start();
+                        nextComponent.tempRule = nextComponent.parentRule.getEndsWith();
+                    }
                 }
             }
             if (nextComponent.tempStart > nextComponent.findFrom) {
@@ -152,6 +194,25 @@ public class Parser {
 
     public void setComposite(Composite composite) {
         this.composite = composite;
+    }
+
+    class Result {
+        int findIndex;
+        int foundIndex;
+        Composite parentComposite;
+        Rule parentRule;
+
+        Component createdComponent;
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                    "findIndex=" + findIndex +
+                    ", foundIndex=" + foundIndex +
+                    ", parentComposite=" + parentComposite +
+                    ", parentRule=" + parentRule +
+                    '}';
+        }
     }
 
     class NextComponent {
