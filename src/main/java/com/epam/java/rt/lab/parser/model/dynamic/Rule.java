@@ -138,7 +138,12 @@ public class Rule {
     }
 
     public StringBuilder toDetails(StringBuilder sb) {
-        sb.append("Rule{name='").append(this.name).append("' rules=[");
+        sb.append("Rule{name='").append(this.name).append("'");
+        sb.append(", patternStart=").append(this.patternStart);
+        sb.append(", patternEnd=").append(this.patternEnd);
+        sb.append(", startsWith=").append(this.startsWith);
+        sb.append(", endsWith=").append(this.endsWith);
+        sb.append(", rules=[");
         for (int i = 0; i < this.rules.size(); i++) {
             this.rules.get(i).toDetails(sb);
         }

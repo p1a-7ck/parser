@@ -117,8 +117,8 @@ public class Ruler {
 
     private void setRegex(String ruleSign, Rule rule) {
         if (this.initRules.containsKey(ruleSign.concat(this.rootInitRule[REGEX_START_KEY])))
-            rule.setPatternStart(Pattern.compile(this.initRules.get(ruleSign.concat(this.rootInitRule[REGEX_START_KEY]))));
+            rule.setPatternStart(Pattern.compile(this.initRules.get(ruleSign.concat(this.rootInitRule[REGEX_START_KEY])).replace("\\\\","\\")));
         if (this.initRules.containsKey(ruleSign.concat(this.rootInitRule[REGEX_END_KEY])))
-            rule.setPatternEnd(Pattern.compile(this.initRules.get(ruleSign.concat(this.rootInitRule[REGEX_END_KEY]))));
+            rule.setPatternEnd(Pattern.compile(this.initRules.get(ruleSign.concat(this.rootInitRule[REGEX_END_KEY])).replace("\\\\","\\")));
     }
 }
