@@ -130,4 +130,12 @@ public class Parser {
     public void setComposite(Composite composite) {
         this.composite = composite;
     }
+
+    public boolean isIgnoreMissed() {
+        return ignoreMissed;
+    }
+
+    public void setIgnoreMissed(boolean ignoreMissed) {
+        this.ignoreMissed = ignoreMissed;
+    }
 }

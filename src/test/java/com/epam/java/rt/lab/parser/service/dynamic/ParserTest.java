@@ -20,7 +20,9 @@ public class ParserTest {
 //        } catch (Exception exc) {
 //            System.out.println("'" + text.compose(new StringBuilder()) + "'");
 //        }
-        Parser.to(text).parseFile("source.txt", true);
+        Parser parser = Parser.to(text);
+        parser.setIgnoreMissed(true);
+        parser.parseFile("source.txt");
 //        System.out.println("'" + text.compose(new StringBuilder()) + "'");
 //        System.out.println(text.countSymbols());
         for (Component component : text.getComponentsByName("paragraph")) {
