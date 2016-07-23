@@ -1,5 +1,7 @@
 package com.epam.java.rt.lab.parser.model.dynamic;
 
+import java.util.List;
+
 /**
  * parser
  */
@@ -17,4 +19,8 @@ public interface Composite {
     Rule getRule();
 
     void setRule(Rule rule);
+
+    int countSymbols();
+
+    List<Component> getComponentsByName(String name);
 }

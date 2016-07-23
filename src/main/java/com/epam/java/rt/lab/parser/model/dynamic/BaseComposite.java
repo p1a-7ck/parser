@@ -43,6 +43,26 @@ public abstract class BaseComposite implements Composite {
     }
 
     @Override
+    public int countSymbols() {
+        int result = 0;
+        for (int i = 0; i < this.components.size(); i++)
+            result += this.components.get(i).countSymbols();
+        return result;
+    }
+
+    @Override
+    public List<Component> getComponentsByName(String name) {
+        List<Component> result = new ArrayList<>();
+        for (Component component : this.components) {
+            if (component.getRule().getName().equals(name))
+                result.add(component);
+            if (component instanceof CompoundComponent)
+                result.addAll(((Composite) component).getComponentsByName(name));
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "BaseComposite{" +
                 ", components=" + components.size() +

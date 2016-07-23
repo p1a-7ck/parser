@@ -38,7 +38,6 @@ public class CompoundComponent extends BaseComposite implements Composite, Compo
         }
     }
 
-
     private SearchResult getComponentSymbol(int index) {
         SearchResult searchResult = new SearchResult();
         int compoundStartIndex = 0;

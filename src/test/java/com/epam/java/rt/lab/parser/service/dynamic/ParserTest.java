@@ -1,5 +1,6 @@
 package com.epam.java.rt.lab.parser.service.dynamic;
 
+import com.epam.java.rt.lab.parser.model.dynamic.Component;
 import com.epam.java.rt.lab.parser.model.dynamic.Composite;
 import com.epam.java.rt.lab.parser.model.dynamic.Text;
 import org.junit.Test;
@@ -19,8 +20,12 @@ public class ParserTest {
 //        } catch (Exception exc) {
 //            System.out.println("'" + text.compose(new StringBuilder()) + "'");
 //        }
-        Parser.to(text).parseFile("source.txt");
-        System.out.println("'" + text.compose(new StringBuilder()) + "'");
+        Parser.to(text).parseFile("source.txt", true);
+//        System.out.println("'" + text.compose(new StringBuilder()) + "'");
+//        System.out.println(text.countSymbols());
+        for (Component component : text.getComponentsByName("paragraph")) {
+            System.out.println("=" + component.compose(new StringBuilder()));
+        }
 
     }
 
