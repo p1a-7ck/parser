@@ -62,12 +62,15 @@ public class Parser {
         return component;
     }
 
-    public int parseComposite(int findFrom, Composite composite) {
+    public int parseComposite(int findFrom, Composite composite, boolean parentEndsWith) {
         int recursiveIndex;
         int findIndex = findFrom;
         Rule childRule;
         Component component;
+        LOGGER_PARSER.debug("parseComposite ({}, {}, {})", findFrom, composite, parentEndsWith);
         if (composite.getRule().getStartsWith() != null) {
+            LOGGER_PARSER.debug("{}.getStartsWith() !== null ({})",
+                    composite.getRule(), composite.getRule().getStartsWith().getPatternStart().toString());
             findIndex = findRuleStart(findIndex, composite.getRule().getStartsWith());
             if (findIndex > findFrom || findIndex < 0) return -1;
             component = getRuleComponent(findIndex, composite.getRule().getStartsWith());
@@ -76,7 +79,10 @@ public class Parser {
         }
         do {
             findFrom = findIndex;
+            LOGGER_PARSER.debug("do (findFrom = {}, findIndex = {})", findFrom, findIndex);
             if (composite.getRule().getEndsWith() != null) {
+                LOGGER_PARSER.debug("{}.getEndsWith() !== null ({})",
+                        composite.getRule(), composite.getRule().getEndsWith().getPatternStart().toString());
                 if (findIndex == findRuleStart(findIndex, composite.getRule().getEndsWith())) {
                     component = getRuleComponent(findIndex, composite.getRule().getEndsWith());
                     composite.add(component);
@@ -84,11 +90,14 @@ public class Parser {
                     return findIndex;
                 }
             }
+            LOGGER_PARSER.debug("for (int i = 0; i < {}; i++) (.getRule() = {})", composite.getRule().countRules(), composite.getRule());
             for (int i = 0; i < composite.getRule().countRules(); i++) {
                 childRule = composite.getRule().getRule(i);
+                LOGGER_PARSER.debug("childRule = {}", childRule);
                 if (childRule.countRules() > 0) {
                     component = new CompoundComponent(childRule);
-                    recursiveIndex = parseComposite(findIndex, (Composite) component);
+                    recursiveIndex = parseComposite(findIndex, (Composite) component,
+                            composite.getRule().getEndsWith() != null || parentEndsWith);
                     if (findIndex < recursiveIndex) {
                         composite.add(component);
                         findIndex = recursiveIndex;
@@ -100,9 +109,11 @@ public class Parser {
                         findIndex += component.countSymbols();
                     }
                 }
-                if (findIndex > findFrom) break;
+                LOGGER_PARSER.debug("if ({} > {} && {}) break;", findIndex, findFrom, parentEndsWith);
+                if (findIndex > findFrom && parentEndsWith) break;
             }
-        } while (findIndex > findFrom);
+            LOGGER_PARSER.debug("while ({} > {} && !{}) break;", findIndex, findFrom, parentEndsWith);
+        } while (findIndex > findFrom && !parentEndsWith);
         if (findIndex == findFrom && composite.getRule().getEndsWith() != null) {
             int someIndex = findIndex + 15;
             if (someIndex > this.source.length()) someIndex = this.source.length();
@@ -115,12 +126,13 @@ public class Parser {
                         this.source.substring(findIndex, someIndex), composite.getRule());
             }
         }
+        LOGGER_PARSER.debug("parseComposite.return = {}", findIndex);
         return findIndex;
     }
 
     public void parse(StringBuilder source) {
         this.source = source;
-        parseComposite(0, this.composite);
+        parseComposite(0, this.composite, false);
     }
 
     public Composite getComposite() {

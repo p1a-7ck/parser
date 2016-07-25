@@ -22,7 +22,8 @@ public class ParserTest {
 //        }
         Parser parser = Parser.to(text);
         parser.setIgnoreMissed(true);
-        parser.parseFile("source.txt");
+        parser.parse(new StringBuilder("one two three\nfour five six\nseven eight nine\nten"));
+//        parser.parseFile("source.txt");
 //        System.out.println("'" + text.compose(new StringBuilder()) + "'");
 //        System.out.println(text.countSymbols());
         for (Component component : text.getComponentsByName("paragraph")) {
