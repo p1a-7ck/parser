@@ -14,14 +14,12 @@ import java.util.regex.Matcher;
  */
 public class Parser {
     private final static Logger logger = LoggerFactory.getLogger(Parser.class);
-    private final Composite composite;
     private final Ruler ruler;
     private String source;
     private int jumpOutRecursion = 0;
 
     public Parser(Ruler ruler) {
         this.ruler = ruler;
-        this.composite = new Composite(ruler.getRootType());
     }
 
     public static Parser with(Ruler ruler) {
@@ -29,7 +27,7 @@ public class Parser {
         return parser;
     }
 
-    public void parseFile(String fileName) {
+    public Composite parseFile(String fileName) {
         StringBuilder lines = new StringBuilder();
         try {
             InputStream in = Parser.class.getClassLoader().getResourceAsStream(fileName);
@@ -42,9 +40,11 @@ public class Parser {
             logger.error("File '{}' not found or file read error", fileName, exc);
         }
         logger.info("Parsing from file '{}' initiated", fileName);
+        Composite composite = new Composite(this.ruler.getRootType());
         int findFrom = 0;
-//        while (findFrom < this.source.length())
-            findFrom = findCompositeComponents(findFrom, this.composite);
+        while (findFrom < this.source.length())
+            findFrom = findCompositeComponents(findFrom, composite);
+        return composite;
     }
 
     private int findComponentStart(int findFrom, Type type) {
@@ -144,9 +144,5 @@ public class Parser {
             }
         } while (findIndex > findFrom && this.jumpOutRecursion == 0);
         return findFrom;
-    }
-
-    public Composite getComposite() {
-        return composite;
     }
 }

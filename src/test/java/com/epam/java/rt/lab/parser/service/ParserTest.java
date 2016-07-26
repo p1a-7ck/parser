@@ -1,6 +1,8 @@
 package com.epam.java.rt.lab.parser.service;
 
 import com.epam.java.rt.lab.parser.model.Componentable;
+import com.epam.java.rt.lab.parser.model.Composite;
+import com.epam.java.rt.lab.parser.model.Type;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -16,9 +18,9 @@ public class ParserTest {
     @Test
     public void initialTest() {
         Ruler ruler = Ruler.from("rules.properties");
-        Parser parser = Parser.with(ruler);
-        parser.parseFile("simple.txt");
-        List<Componentable> list = parser.getComposite().componentsList("paragraph");
+        Composite composite = Parser.with(ruler).parseFile("simple.txt");
+
+        List<Componentable> list = composite.componentsList("paragraph");
         for (Componentable componentable : list) {
             System.out.println("PPH: " + componentable.compose(new StringBuilder()));
         }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * parser
  */
-public class Composite implements Componentable {
+public class Composite implements Componentable, Iterable<Type> {
     private final Type type;
     private final List<Componentable> components;
     private List<Componentable> list;
@@ -92,4 +92,10 @@ public class Composite implements Componentable {
         }
     }
 
+    @Override
+    public Iterator<Type> iterator() {
+        List<Componentable> result = new ArrayList<>();
+
+        return null;
+    }
 }
