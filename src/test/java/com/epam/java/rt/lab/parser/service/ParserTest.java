@@ -20,8 +20,7 @@ public class ParserTest {
         Ruler ruler = Ruler.from("rules.properties");
         Composite composite = Parser.with(ruler).parseFile("simple.txt");
 
-        List<Componentable> list = composite.componentsList("paragraph");
-        for (Componentable componentable : list) {
+        for (Componentable componentable : composite.componentsList("paragraph")) {
             System.out.println("PPH: " + componentable.compose(new StringBuilder()));
         }
     }

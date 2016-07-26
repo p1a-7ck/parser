@@ -42,7 +42,7 @@ public class Parser {
         logger.info("Parsing from file '{}' initiated", fileName);
         Composite composite = new Composite(this.ruler.getRootType());
         int findFrom = 0;
-        while (findFrom < this.source.length())
+        while (findFrom < this.source.length() - 1)
             findFrom = findCompositeComponents(findFrom, composite);
         return composite;
     }
