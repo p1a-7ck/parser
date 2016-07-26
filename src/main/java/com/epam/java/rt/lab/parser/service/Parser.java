@@ -50,7 +50,6 @@ public class Parser {
     private int findComponentStart(int findFrom, Type type) {
         Matcher matcher = ruler.getTypeRulePatternStart(type).matcher(this.source);
         if (!matcher.find(findFrom)) return -1;
-        System.out.println("findFrom=" + findFrom + ", type=" + type + ", matcher.start()=" + matcher.start());
         return matcher.start();
     }
 
@@ -134,9 +133,14 @@ public class Parser {
                 } else {
                     childComposite = new Composite(subType);
                     findIndex = findCompositeComponents(findFrom, childComposite);
-                    if (findIndex > findFrom) ((Composite) composite).add(childComposite);
-                    break;
+                    if (findIndex > findFrom) {
+                        ((Composite) composite).add(childComposite);
+                        break;
+                    }
                 }
+            }
+            if (findFrom == 22) {
+                findFrom = findFrom;
             }
         } while (findIndex > findFrom && this.jumpOutRecursion == 0);
         return findFrom;
