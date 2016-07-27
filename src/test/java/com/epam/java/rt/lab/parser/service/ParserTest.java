@@ -15,9 +15,17 @@ public class ParserTest {
     @Test
     public void initialTest() {
         Composite composite = Parser.with(Ruler.from("rules.properties")).parseFile("simple.txt");
+        Componentable compNext;
         Iterator it = composite.iterator(Type.of("word"));
         while(it.hasNext()) {
-            System.out.println("filtered: " + ((Componentable) it.next()).compose(new StringBuilder()));
+            compNext = (Componentable) it.next();
+            System.out.println(compNext.getType().getName() + ": " + compNext.compose(new StringBuilder()));
+        }
+
+        Iterator itString = composite.iterator(".");
+        while(itString.hasNext()) {
+            compNext = (Componentable) itString.next();
+            System.out.println(compNext.getType().getName() + ": " + compNext.compose(new StringBuilder()));
         }
 
         for (Componentable item : composite) {

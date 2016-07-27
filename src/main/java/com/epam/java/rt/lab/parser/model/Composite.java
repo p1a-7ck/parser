@@ -107,13 +107,60 @@ public class Composite implements Componentable, Iterable<Componentable> {
                 }
                 Componentable childComponentable;
                 while(this.levelIndex < this.levels.size()) {
-                    System.out.println(this.levelIndex + " < " + this.levels.size());
                     for (int i = this.currIndex + 1; i < this.currLevel.size(); i++) {
                         childComponentable = this.currLevel.get(i);
                         if (childComponentable instanceof Composite) {
                             this.levels.put(this.levels.size(), ((Composite) childComponentable).components);
                         }
                         if (childComponentable.getType().getName().equals(type.getName())) {
+                            this.currIndex = i;
+                            this.nextIndex = true;
+                            return true;
+                        }
+                    }
+                    this.levelIndex += 1;
+                    this.currLevel = this.levels.get(this.levelIndex);
+                }
+                this.currIndex = -1;
+                this.nextIndex = false;
+                return false;
+            }
+
+            @Override
+            public Componentable next() {
+                if (!this.nextIndex) hasNext();
+                this.nextIndex = false;
+                if (this.currIndex < 0) return null;
+                return this.currLevel.get(this.currIndex);
+            }
+
+        };
+        return it;
+    }
+
+    public Iterator<Componentable> iterator(String stringValue) {
+        Iterator<Componentable> it = new Iterator<Componentable>() {
+            Map<Integer, List<Componentable>> levels = new HashMap<>();
+            List<Componentable> currLevel = null;
+            int levelIndex = -1;
+            int currIndex = -1;
+            boolean nextIndex = false;
+
+            @Override
+            public boolean hasNext() {
+                if (this.levels.size() == 0) {
+                    this.levels.put(0, components);
+                    this.levelIndex = 0;
+                    this.currLevel = this.levels.get(this.levelIndex);
+                }
+                Componentable childComponentable;
+                while(this.levelIndex < this.levels.size()) {
+                    for (int i = this.currIndex + 1; i < this.currLevel.size(); i++) {
+                        childComponentable = this.currLevel.get(i);
+                        if (childComponentable instanceof Composite) {
+                            this.levels.put(this.levels.size(), ((Composite) childComponentable).components);
+                        }
+                        if (childComponentable.compose(new StringBuilder()).toString().equals(stringValue)) {
                             this.currIndex = i;
                             this.nextIndex = true;
                             return true;
