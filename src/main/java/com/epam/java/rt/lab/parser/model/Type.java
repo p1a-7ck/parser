@@ -21,6 +21,10 @@ public class Type {
         this.types = new ArrayList<>();
     }
 
+    public static Type of(String name) {
+        return new Type(null, name, null, null);
+    }
+
     public String getName() {
         return this.name;
     }
