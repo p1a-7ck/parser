@@ -43,36 +43,36 @@ public class Parser {
         Composite composite = new Composite(this.ruler.getRootType());
         int findFrom = 0;
         while (findFrom < this.source.length() - 1)
-            findFrom = findCompositeComponents(findFrom, composite);
+            findFrom = findCompositeLeafs(findFrom, composite);
         return composite;
     }
 
-    private int findComponentStart(int findFrom, Type type) {
+    private int findTypeStart(int findFrom, Type type) {
         Matcher matcher = ruler.getTypeRulePatternStart(type).matcher(this.source);
         if (!matcher.find(findFrom)) return -1;
         return matcher.start();
     }
 
-    private Component getComponent(int componentStart, Type type) {
+    private Leaf getTypeLeaf(int typeStart, Type type) {
         Matcher matcher = ruler.getTypeRulePatternEnd(type).matcher(this.source);
-        if (!matcher.find(componentStart)) {
-            int componentEnd = componentStart + 15;
+        if (!matcher.find(typeStart)) {
+            int componentEnd = typeStart + 15;
             if (componentEnd > this.source.length()) componentEnd = this.source.length();
             throw new IllegalStateException("PatternEnd not found for type '" + type.getName() + "'" +
-                    " (..." + this.source.substring(componentStart, componentEnd) + "...)");
+                    " (..." + this.source.substring(typeStart, componentEnd) + "...)");
         }
-        Component component = new Component(type);
-        component.addLeafAll(Leaf.from(this.source.substring(componentStart, matcher.start()).toCharArray()));
-        return component;
+        Leaf leaf = Leaf.of(this.source.substring(typeStart, matcher.start()).toCharArray());
+        leaf.setType(type);
+        return leaf;
     }
 
-    private void checkForParentsEndsWithComponent(int findFrom, Type type) {
+    private void checkForParentsEndsWithType(int findFrom, Type type) {
         int jumpOutRecursion = 0;
         while (type.getParent() != null) {
             jumpOutRecursion += 1;
             type = type.getParent();
             if (type.getEndsWith() != null) {
-                if (findFrom == findComponentStart(findFrom, type.getEndsWith())) {
+                if (findFrom == findTypeStart(findFrom, type.getEndsWith())) {
                     this.jumpOutRecursion = jumpOutRecursion;
                     break;
                 }
@@ -80,42 +80,42 @@ public class Parser {
         }
     }
 
-    private int findCompositeStartsWithComponent(int findFrom, Composite composite) {
+    private int findCompositeStartsWithType(int findFrom, Composite composite) {
         if (composite.getType().startsWith == null) return findFrom;
-        if (findFrom == findComponentStart(findFrom, composite.getType().startsWith)) {
-            Component component = getComponent(findFrom, composite.getType().startsWith);
-            composite.add(component);
-            return findFrom + component.countLeafs();
+        if (findFrom == findTypeStart(findFrom, composite.getType().startsWith)) {
+            Leaf leaf = getTypeLeaf(findFrom, composite.getType().startsWith);
+            composite.add(leaf);
+            return findFrom + leaf.countChars();
         } else {
             return -1;
         }
     }
 
-    private int findCompositeEndsWithComponent(int findFrom, Composite composite) {
-        if (this.jumpOutRecursion == 0) checkForParentsEndsWithComponent(findFrom, composite.getType());
+    private int findCompositeEndsWithType(int findFrom, Composite composite) {
+        if (this.jumpOutRecursion == 0) checkForParentsEndsWithType(findFrom, composite.getType());
         if (this.jumpOutRecursion > 0) {
             this.jumpOutRecursion -= 1;
             return findFrom;
         }
         if (composite.getType().endsWith == null) return -1;
-        if (findFrom == findComponentStart(findFrom, composite.getType().endsWith)) {
-            Component component = getComponent(findFrom, composite.getType().endsWith);
-            composite.add(component);
-            return findFrom + component.countLeafs();
+        if (findFrom == findTypeStart(findFrom, composite.getType().endsWith)) {
+            Leaf leaf = getTypeLeaf(findFrom, composite.getType().endsWith);
+            composite.add(leaf);
+            return findFrom + leaf.countChars();
         } else {
             return -1;
         }
     }
 
-    private int findCompositeComponents(int findFrom, Componentable composite) {
-        logger.debug("findCompositeComponents ({}, {})", findFrom, composite);
+    private int findCompositeLeafs(int findFrom, Component composite) {
+        logger.debug("findCompositeLeafs ({}, {})", findFrom, composite);
         Type subType;
-        Componentable childComposite;
-        int findIndex = findCompositeStartsWithComponent(findFrom, (Composite) composite);
+        Component childComposite;
+        int findIndex = findCompositeStartsWithType(findFrom, (Composite) composite);
         if (findIndex == -1) return -1;
         do {
             findFrom = findIndex;
-            findIndex = findCompositeEndsWithComponent(findFrom, (Composite) composite);
+            findIndex = findCompositeEndsWithType(findFrom, (Composite) composite);
             if (findIndex >= 0) {
                 findFrom = findIndex;
                 break;
@@ -123,24 +123,21 @@ public class Parser {
             for (int i = 0; i < composite.getType().countSubTypes(); i++) {
                 subType = composite.getType().getSubType(i);
                 if (subType.countSubTypes() == 0) {
-                    findIndex = findComponentStart(findFrom, subType);
+                    findIndex = findTypeStart(findFrom, subType);
                     if (findIndex == findFrom) {
-                        Component component = getComponent(findFrom, subType);
-                        ((Composite) composite).add(component);
-                        findIndex = findFrom + component.countLeafs();
+                        Leaf leaf = getTypeLeaf(findFrom, subType);
+                        ((Composite) composite).add(leaf);
+                        findIndex = findFrom + leaf.countChars();
                         break;
                     }
                 } else {
                     childComposite = new Composite(subType);
-                    findIndex = findCompositeComponents(findFrom, childComposite);
+                    findIndex = findCompositeLeafs(findFrom, childComposite);
                     if (findIndex > findFrom) {
                         ((Composite) composite).add(childComposite);
                         break;
                     }
                 }
-            }
-            if (findFrom == 22) {
-                findFrom = findFrom;
             }
         } while (findIndex > findFrom && this.jumpOutRecursion == 0);
         return findFrom;

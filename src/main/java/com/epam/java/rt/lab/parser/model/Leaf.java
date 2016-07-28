@@ -1,34 +1,58 @@
 package com.epam.java.rt.lab.parser.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * parser
  */
-public class Leaf {
-    public final char ch;
+public class Leaf implements Component {
+    private Type type;
+    private char[] chars;
 
-    public Leaf(char ch) {
-        this.ch = ch;
+    public Leaf() {
     }
 
-    public static Leaf of(char ch) {
-        return new Leaf(ch);
+    public Leaf(char[] chars) {
+        this.chars = chars;
     }
 
-    public static List<Leaf> from(char[] chs) {
-        List<Leaf> leafs = new ArrayList<>();
-        for (char ch : chs) leafs.add(Leaf.of(ch));
-        return leafs;
+    public static Leaf of(char[] chars) {
+        return new Leaf(chars);
     }
 
-    public char getCh() {
-        return this.ch;
+    public Type getType() {
+        return this.type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void addChars(char[] chars) {
+        this.chars = chars;
+    }
+
+    public void removeChars() {
+        this.chars = null;
+    }
+
+    public int countChars() {
+        return this.chars.length;
+    }
+
+    public char[] getChars() {
+        return this.chars.clone();
+    }
+
+    public StringBuilder compose(StringBuilder stringBuilder) {
+        return stringBuilder.append(this.chars);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.ch);
+        return "Leaf{" +
+                "type=" + type +
+                ", chars=" + Arrays.toString(chars) +
+                '}';
     }
 }
