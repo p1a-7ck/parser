@@ -34,7 +34,7 @@ public class Ruler {
             if (root == null) return null;
             String[] init = root.split(",");
             if (init.length != 6) return null;
-            Type rootType = new Type(null, properties.getProperty(init[0]), null, null);
+            Type rootType = new Type(properties.getProperty(init[0]));
             Ruler ruler = new Ruler(init, rootType);
             ruler.createTypes(properties);
             return ruler;
@@ -78,8 +78,8 @@ public class Ruler {
     private StringBuilder getTypeDetail(Type type, StringBuilder stringBuilder) {
         stringBuilder.append(type.getName()).append("{");
         stringBuilder.append(rules.get(type));
-        if (type.getStartsWith() != null) stringBuilder.append(", startsWith=").append(type.getStartsWith());
-        if (type.getEndsWith() != null) stringBuilder.append(", endsWith=").append(type.getEndsWith());
+        for (int i = 0; i < type.countStartsWith(); i++) stringBuilder.append(", startsWith=").append(type.getStartsWith(i));
+        for (int i = 0; i < type.countEndsWith(); i++) stringBuilder.append(", endsWith=").append(type.getEndsWith(i));
         if (type.countSubTypes() > 0) {
             stringBuilder.append(", subTypes=[");
             for (int i = 0; i < type.countSubTypes(); i++) {
@@ -107,21 +107,24 @@ public class Ruler {
             Rule rule = getRule(typeSign, properties);
             if (rule == null)
                 throw new IllegalStateException("Keys .startPattern or .endPattern not found for " + typeSign);
-            Type type = new Type(parentType, properties.getProperty(typeSign), null, null);
+            Type type = new Type(properties.getProperty(typeSign));
+            type.setParent(parentType);
             parentType.addSubType(type);
             this.rules.put(type, rule);
             logger.info("Sub-type '{}' created for '{}'", type.getName(), parentType.getName());
         } else {
-            Type typeStartsWith = null;
+            Type type = new Type(properties.getProperty(typeSign));
+            type.setParent(parentType);
+            parentType.addSubType(type);
             String typeSignStartsWith = properties.getProperty(typeSign.concat(this.init[STARTS_WITH_KEY]));
-            if (typeSignStartsWith != null)
-                typeStartsWith = createServiceType(typeSign.concat(".").concat(typeSignStartsWith), properties);
-            Type typeEndsWith = null;
+            if (typeSignStartsWith != null) {
+                for (String subTypeSign : typeSignStartsWith.split(","))
+                    type.addStartsWith(createServiceType(typeSign.concat(".").concat(subTypeSign), properties));
+            }
             String typeSignEndsWith = properties.getProperty(typeSign.concat(this.init[ENDS_WITH_KEY]));
             if (typeSignEndsWith != null)
-                typeEndsWith = createServiceType(typeSign.concat(".").concat(typeSignEndsWith), properties);
-            Type type = new Type(parentType, properties.getProperty(typeSign), typeStartsWith, typeEndsWith);
-            parentType.addSubType(type);
+                for (String subTypeSign : typeSignEndsWith.split(","))
+                    type.addEndsWith(createServiceType(typeSign.concat(".").concat(subTypeSign), properties));
             logger.info("Sub-type '{}' created for '{}'", type.getName(), parentType.getName());
             for (String subTypeSign : typeContains.split(","))
                 createSubType(type, typeSign.concat(".").concat(subTypeSign), properties);
@@ -132,7 +135,7 @@ public class Ruler {
         Rule rule = getRule(typeSign, properties);
         if (rule == null)
             throw new IllegalStateException("Keys .startPattern or .endPattern not found for " + typeSign);
-        Type type = new Type(null, properties.getProperty(typeSign), null, null);
+        Type type = new Type(properties.getProperty(typeSign));
         this.rules.put(type, rule);
         logger.info("Service type created '{}'", type.getName());
         return type;

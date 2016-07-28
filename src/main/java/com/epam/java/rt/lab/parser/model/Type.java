@@ -7,38 +7,75 @@ import java.util.List;
  * parser
  */
 public class Type {
-    public final Type parent;
-    public final String name;
-    public final Type startsWith;
-    public final Type endsWith;
-    public final List<Type> types;
+    private Type parent;
+    private String name;
+    private List<Type> startsWith;
+    private List<Type> endsWith;
+    private List<Type> types;
 
-    public Type(Type parent, String name, Type startsWith, Type endsWith) {
-        this.parent = parent;
-        this.name = name;
-        this.startsWith = startsWith;
-        this.endsWith = endsWith;
+    public Type() {
+        this.startsWith = new ArrayList<>();
+        this.endsWith = new ArrayList<>();
         this.types = new ArrayList<>();
     }
 
+    public Type(String name) {
+        this.startsWith = new ArrayList<>();
+        this.endsWith = new ArrayList<>();
+        this.types = new ArrayList<>();
+        this.name = name;
+    }
+
     public static Type of(String name) {
-        return new Type(null, name, null, null);
+        return new Type(name);
     }
 
     public String getName() {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Type getParent() {
         return this.parent;
     }
 
-    public Type getStartsWith() {
-        return this.startsWith;
+    public void setParent(Type parent) {
+        this.parent = parent;
     }
 
-    public Type getEndsWith() {
-        return this.endsWith;
+    public boolean addStartsWith(Type type) {
+        return this.startsWith.add(type);
+    }
+
+    public Type removeStartsWith(int index) {
+        return this.startsWith.remove(index);
+    }
+
+    public Type getStartsWith(int index) {
+        return this.startsWith.get(index);
+    }
+
+    public int countStartsWith() {
+        return this.startsWith.size();
+    }
+
+    public boolean addEndsWith(Type type) {
+        return this.endsWith.add(type);
+    }
+
+    public Type removeEndsWith(int index) {
+        return this.endsWith.remove(index);
+    }
+
+    public Type getEndsWith(int index) {
+        return this.endsWith.get(index);
+    }
+
+    public int countEndsWith() {
+        return this.endsWith.size();
     }
 
     public boolean addSubType(Type type) {
