@@ -1,4 +1,4 @@
-package com.epam.java.rt.lab.parser.service;
+package com.epam.java.rt.lab.parser.parser;
 
 import com.epam.java.rt.lab.parser.model.*;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class Parser {
         logger.info("Parsing from file '{}' initiated", fileName);
         Composite composite = new Composite(this.ruler.getRootType());
         int findFrom = 0;
-//        while (findFrom < this.source.length() - 1)
+//        while (findFrom < (this.source.length() - 1) && findFrom != -1)
             findFrom = findCompositeLeafs(findFrom, composite);
         return composite;
     }
@@ -77,6 +77,7 @@ public class Parser {
                     break;
                 }
             }
+            if (this.jumpOutRecursion > 0) break;
         }
     }
 
@@ -93,11 +94,6 @@ public class Parser {
     }
 
     private int findCompositeEndsWithType(int findFrom, Composite composite) {
-        if (this.jumpOutRecursion == 0) checkForParentsEndsWithType(findFrom, composite.getType());
-        if (this.jumpOutRecursion > 0) {
-            this.jumpOutRecursion -= 1;
-            return findFrom;
-        }
         if (composite.getType().countEndsWith() == 0) return -1;
         for (int i = 0; i < composite.getType().countEndsWith(); i++) {
             if (findFrom == findTypeStart(findFrom, composite.getType().getEndsWith(i))) {
@@ -105,6 +101,11 @@ public class Parser {
                 composite.add(leaf);
                 return findFrom + leaf.countChars();
             }
+        }
+        if (this.jumpOutRecursion == 0) checkForParentsEndsWithType(findFrom, composite.getType());
+        if (this.jumpOutRecursion > 0) {
+            this.jumpOutRecursion -= 1;
+            return findFrom;
         }
         return -1;
     }
@@ -118,8 +119,8 @@ public class Parser {
         do {
             findFrom = findIndex;
             findIndex = findCompositeEndsWithType(findFrom, (Composite) composite);
-            if (findIndex >= 0) {
-                findFrom = findIndex;
+            if (findIndex >= 0 || this.jumpOutRecursion > 0) {
+                if (findIndex >= 0) findFrom = findIndex;
                 break;
             }
             for (int i = 0; i < composite.getType().countSubTypes(); i++) {

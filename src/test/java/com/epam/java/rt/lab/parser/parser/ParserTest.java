@@ -1,4 +1,4 @@
-package com.epam.java.rt.lab.parser.service;
+package com.epam.java.rt.lab.parser.parser;
 
 import com.epam.java.rt.lab.parser.model.Component;
 import com.epam.java.rt.lab.parser.model.Composite;
@@ -15,21 +15,14 @@ public class ParserTest {
 
     @Test
     public void initialTest() {
-        Composite composite = Parser.with(Ruler.from("rules.properties")).parseFile("simple.txt");
+        Composite composite = Parser.with(Ruler.from("rules.properties")).parseFile("source.txt");
         assertNotNull(composite);
         Component compNext;
-        Iterator it = composite.iterator(Type.of("word"));
+        Iterator it = composite.iterator(Type.of("paragraph"));
         while(it.hasNext()) {
             compNext = (Component) it.next();
             System.out.println(compNext.getType().getName() + ": " + compNext.compose(new StringBuilder()));
         }
-        System.out.println(composite.compose(new StringBuilder()));
-
-//        for (Component item : composite) {
-//            item = (Component) item;
-//            System.out.println(item.getType().getName() + " = '" + item.compose(new StringBuilder()) + "'");
-//        }
-
     }
 
 }

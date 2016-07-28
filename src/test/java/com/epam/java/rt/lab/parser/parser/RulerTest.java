@@ -1,4 +1,4 @@
-package com.epam.java.rt.lab.parser.service;
+package com.epam.java.rt.lab.parser.parser;
 
 import org.junit.Test;
 

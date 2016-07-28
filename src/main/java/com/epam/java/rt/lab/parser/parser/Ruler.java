@@ -1,4 +1,4 @@
-package com.epam.java.rt.lab.parser.service;
+package com.epam.java.rt.lab.parser.parser;
 
 import com.epam.java.rt.lab.parser.model.Type;
 import org.slf4j.Logger;
@@ -145,8 +145,8 @@ public class Ruler {
         if (properties.getProperty(typeSign.concat(this.init[REGEX_START_KEY])) == null ||
                 properties.getProperty(typeSign.concat(this.init[REGEX_END_KEY])) == null) return null;
         return new Rule(
-                Pattern.compile(properties.getProperty(typeSign.concat(this.init[REGEX_START_KEY])).replace("\\\\", "\\")),
-                Pattern.compile(properties.getProperty(typeSign.concat(this.init[REGEX_END_KEY])).replace("\\\\", "\\"))
+                Pattern.compile(properties.getProperty(typeSign.concat(this.init[REGEX_START_KEY]))),
+                Pattern.compile(properties.getProperty(typeSign.concat(this.init[REGEX_END_KEY])))
         );
     }
 
