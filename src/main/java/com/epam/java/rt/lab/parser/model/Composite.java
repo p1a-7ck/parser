@@ -5,83 +5,72 @@ import java.util.*;
 /**
  * parser
  */
-public class Composite implements Component, Iterable<Component> {
-    private Type type;
+public class Composite extends Component implements Iterable<Component> {
     private List<Component> components = new ArrayList<>();
 
     public Composite() {
     }
 
-    public Composite(Type type) {
-        this.type = type;
+    public static Component of(Type type) {
+        Component component = new Composite();
+        component.setType(type);
+        return component;
     }
 
-    public boolean add(Component component) {
+    @Override
+    public boolean addChildren(List<Component> components) {
+        return this.components.addAll(components);
+    }
+
+    @Override
+    public boolean addChild(Component component) {
         return this.components.add(component);
     }
 
-    public Component remove(int index) {
+    @Override
+    public Component removeChild(int index) {
         return this.components.remove(index);
     }
 
-    public Component get(int index) {
+    @Override
+    public Component getChild(int index) {
         return this.components.get(index);
     }
 
-    public int count() {
+    @Override
+    public int countChildren() {
         return this.components.size();
     }
 
-    @Override
-    public Type getType() {
-        return this.type;
-    }
-
-    @Override
-    public void addChars(char[] chars) {
-        throw new IllegalStateException("This operation restricted for Composite");
-    }
-
-    @Override
-    public void removeChars() {
-        throw new IllegalStateException("This operation restricted for Composite");
-    }
-
-    @Override
-    public int countChars() {
+    public int countChildrenDeep() {
         int result = 0;
-        for (Component component : this.components)
-            result += component.countChars();
+        for (Component component : this.components) {
+            if (component instanceof Composite) {
+                result += ((Composite) component).countChildrenDeep();
+            } else {
+                result += component.countChildren();
+            }
+        }
         return result;
     }
 
     @Override
-    public char[] getChars() {
-        StringBuilder sb = new StringBuilder();
-        for (Component component : this.components) {
-            sb.append(component.getChars());
-        }
-        return sb.toString().toCharArray(); // bad retrieving char array
-    }
-
-    @Override
-    public StringBuilder compose(StringBuilder stringBuilder) {
-        for (Component component : this.components) {
-            component.compose(stringBuilder);
-        }
-        return stringBuilder;
+    public StringBuilder compose(StringBuilder sb) {
+        for (Component component : this.components)
+            component.compose(sb);
+        return sb;
     }
 
     @Override
     public String toString() {
         return "Composite{" +
-                "type=" + this.type +
+                "type=" + this.getType().getName() +
                 ", components=" + this.components.size() +
                 '}';
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<Component> iterator() {
         return iterator(Type.of(""));
     }
 
@@ -109,12 +98,16 @@ public class Composite implements Component, Iterable<Component> {
                     for (int i = this.currIndex + 1; i < this.currLevel.size(); i++) {
                         childComponent = this.currLevel.get(i);
                         if (childComponent instanceof Composite) {
-                            this.levels.put(this.levels.size(), ((Composite) childComponent).components);
-                        }
-                        if (childComponent.getType().getName().equals(type.getName())) {
-                            this.currIndex = i;
-                            this.currNext = true;
-                            return true;
+                            if (((Composite) childComponent).components.size() > 0) {
+                                if (!(((Composite) childComponent).components.get(0) instanceof Leaf)) {
+                                    this.levels.put(this.levels.size(), ((Composite) childComponent).components);
+                                }
+                            }
+                            if (childComponent.getType().getName().equals(type.getName())) {
+                                this.currIndex = i;
+                                this.currNext = true;
+                                return true;
+                            }
                         }
                     }
                 }

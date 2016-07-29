@@ -1,18 +1,40 @@
 package com.epam.java.rt.lab.parser.model;
 
+import java.util.List;
+
 /**
  * parser
  */
-public interface Component {
-    Type getType();
+public abstract class Component {
+    private Type type;
 
-    void addChars(char[] chars);
+    public Type getType() {
+        return this.type;
+    }
 
-    void removeChars();
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-    int countChars();
+    public boolean addChildren(List<Component> components) {
+        throw new IllegalStateException();
+    }
 
-    char[] getChars();
+    public boolean addChild(Component component) {
+        throw new IllegalStateException();
+    }
 
-    StringBuilder compose(StringBuilder stringBuilder);
+    public Component removeChild(int index) {
+        throw new IllegalStateException();
+    }
+
+    public Component getChild(int index) {
+        throw new IllegalStateException();
+    }
+
+    public int countChildren() {
+        throw new IllegalStateException();
+    }
+
+    public abstract StringBuilder compose(StringBuilder sb);
 }

@@ -15,10 +15,10 @@ public class ParserTest {
 
     @Test
     public void initialTest() {
-        Composite composite = Parser.with(Ruler.from("rules.properties")).parseFile("source.txt");
-        assertNotNull(composite);
+        Component component = Parser.with(Ruler.from("rules.properties")).parseFile("source.txt");
+        assertNotNull(component);
         Component compNext;
-        Iterator it = composite.iterator(Type.of("paragraph"));
+        Iterator it = ((Composite) component).iterator(Type.of("paragraph"));
         while(it.hasNext()) {
             compNext = (Component) it.next();
             System.out.println(compNext.getType().getName() + ": " + compNext.compose(new StringBuilder()));
