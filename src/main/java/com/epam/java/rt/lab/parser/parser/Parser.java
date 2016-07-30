@@ -17,6 +17,7 @@ public class Parser {
     private final Ruler ruler;
     private String source;
     private int jumpOutRecursion = 0;
+    private boolean leafCached;
 
     public Parser(Ruler ruler) {
         this.ruler = ruler;
@@ -26,7 +27,7 @@ public class Parser {
         return new Parser(ruler);
     }
 
-    public Component parseFile(String fileName) {
+    public Component parseFile(String fileName, boolean leafCached) {
         StringBuilder lines = new StringBuilder();
         try {
             InputStream in = Parser.class.getClassLoader().getResourceAsStream(fileName);
@@ -40,6 +41,7 @@ public class Parser {
         }
         logger.info("Parsing from file '{}' initiated", fileName);
         Component component = Composite.of(this.ruler.getRootType());
+        this.leafCached = leafCached;
         findComponents(0, component);
 //        int findFrom = 0;
 //        while (findFrom < (this.source.length() - 1) && findFrom != -1)
@@ -62,7 +64,11 @@ public class Parser {
                     " (..." + this.source.substring(typeStart, typeEndNotFound) + "...)");
         }
         Component component = Composite.of(type);
-        component.addChildren(Leaf.of(CharCache.cache(this.source.substring(typeStart, matcher.start()).toCharArray())));
+        if (this.leafCached) {
+            component.addChildren(Leaf.ofCached(this.source.substring(typeStart, matcher.start()).toCharArray()));
+        } else {
+            component.addChildren(Leaf.of(CharCache.cache(this.source.substring(typeStart, matcher.start()).toCharArray())));
+        }
         return component;
     }
 

@@ -15,7 +15,7 @@ public class ParserTest {
 
     @Test
     public void initialTest() {
-        Component component = Parser.with(Ruler.from("rules.properties")).parseFile("source.txt");
+        Component component = Parser.with(Ruler.from("rules.properties")).parseFile("source.txt", true);
         assertNotNull(component);
         Component compNext;
         Iterator it = ((Composite) component).iterator(Type.of("paragraph"));
