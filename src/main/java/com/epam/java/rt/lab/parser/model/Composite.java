@@ -8,12 +8,12 @@ import java.util.*;
 public class Composite extends Component implements Iterable<Component> {
     private List<Component> components = new ArrayList<>();
 
-    public Composite() {
+    public Composite(Type type) {
+        super(type);
     }
 
     public static Component of(Type type) {
-        Component component = new Composite();
-        component.setType(type);
+        Component component = new Composite(type);
         return component;
     }
 

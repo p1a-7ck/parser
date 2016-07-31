@@ -1,6 +1,5 @@
 package com.epam.java.rt.lab.parser;
 
-import com.epam.java.rt.lab.parser.model.CharCache;
 import com.epam.java.rt.lab.parser.model.Component;
 import com.epam.java.rt.lab.parser.model.Leaf;
 import com.epam.java.rt.lab.parser.parser.Parser;

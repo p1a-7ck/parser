@@ -6,14 +6,14 @@ import java.util.List;
  * parser
  */
 public abstract class Component {
-    private Type type;
+    private final Type type;
+
+    public Component(Type type) {
+        this.type = type;
+    }
 
     public Type getType() {
         return this.type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
     public boolean addChildren(List<Component> components) {

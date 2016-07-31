@@ -65,5 +65,4 @@ public class WordAnalyzer {
         });
         return result;
     }
-
 }

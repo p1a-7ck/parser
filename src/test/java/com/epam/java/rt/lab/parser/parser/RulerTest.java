@@ -13,6 +13,8 @@ public class RulerTest {
     public void initialTest() {
         Ruler ruler = Ruler.from("rules.properties");
         assertNotNull(ruler);
+        assertNotNull(ruler.getRootType());
+        assertTrue(ruler.getRootType().countSubTypes() > 0);
         System.out.println(ruler.toDetails());
     }
 

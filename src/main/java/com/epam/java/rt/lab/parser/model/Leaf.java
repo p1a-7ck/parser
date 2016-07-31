@@ -10,14 +10,15 @@ import java.util.Map;
  */
 public class Leaf extends Component {
     private static final Map<Integer, Leaf> CACHE = new HashMap<>();
-    private char ch;
+    private final char ch;
 
-    public Leaf() {
+    public Leaf(char ch) {
+        super(null);
+        this.ch = ch;
     }
 
     public static Component of(char ch) {
-        Component component = new Leaf();
-        ((Leaf) component).ch = ch;
+        Component component = new Leaf(ch);
         return component;
     }
 

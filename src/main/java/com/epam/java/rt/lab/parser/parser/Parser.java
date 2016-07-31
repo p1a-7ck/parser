@@ -35,7 +35,7 @@ public class Parser {
             String line = null;
             while ((line = reader.readLine()) != null)
                 lines.append(line).append("\n");
-            this.source = lines.toString();
+            this.source = lines.append("\0").toString();
         } catch (Exception exc) {
             logger.error("File '{}' not found or file read error", fileName, exc);
         }
@@ -67,7 +67,7 @@ public class Parser {
         if (this.leafCached) {
             component.addChildren(Leaf.ofCached(this.source.substring(typeStart, matcher.start()).toCharArray()));
         } else {
-            component.addChildren(Leaf.of(CharCache.cache(this.source.substring(typeStart, matcher.start()).toCharArray())));
+            component.addChildren(Leaf.of(this.source.substring(typeStart, matcher.start()).toCharArray()));
         }
         return component;
     }
