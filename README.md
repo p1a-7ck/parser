@@ -1,21 +1,21 @@
 # parser
 Java Lab #19, Task #2
 
-The Parser-project shows the usage of Composite design pattern, Iterable and Iterator interface implementation, Collections' sorting method. Parser algorithm based on Recursive parser, which tries to find nearest text-part's type pattern. Each type of text-part defined in a 'rules.properties'-file.
+The Parser-project shows the usage of Composite design pattern, Iterable and Iterator interface implementation, Collections' sorting method. Parser algorithm based on Recursive parser, which tries to find pattern of nearest text-part of any type. Each type of text-part defined in a 'rules.properties'-file.
 
 
 ***
 #parser algorithm
 
-1. Checks for defined startsWith text-parts, if startsWith defined and starting index equals current index, then algorithm moves to the next step. Otherwise, if startsWith starting index greater than current index, then algorithm exits.
+1. Checks for defined startsWith-type for parent type, if startsWith-type is defined and it's starting index equals current index, then relevant text-part of startsWith-type added to the parent composite. If startsWith-type is defined and it's starting index greater than current index, then algorithm exits current recursion method.
 
-2. Checks for defined endsWith text-parts, if endsWith defined and starting index equals current index, then algorithm exits. Otherwise, if endsWith starting index greater than current index, then algorithm moves to the next step.
+2. Checks for defined endsWith-type for parent type, if endsWith-type is defined and it's starting index equals current index, then relevant text-part of endsWith-type added to the parent composite and algorithm exits current recursion method.
 
-3. Checks for defined endsWith text-parts of the parent text-parts, if there are any endsWith text-part starting index equals current index, then algorithm exits to the parent.
+3. Checks for defined endsWith-type for all parent types, if there are any endsWith-type is defined and it's starting index equals current index, then algorithm exits resursion method up to the exact parent, which endsWith-type' starting index equals current index.
 
-4. Checks for defined contains text-parts, if text-part contains another text-parts, then method should be called recursively. Otherwise, searching any contains text-parts, which starts from current index.
+4. Checks for defined subTypes contained in parent type, if any subType contains another subTypes, then method should be called recursively for that subType. If subType don't have another subTypes, then it means that subType have search patterns and it's possible to find some relevant text-part. If subType starting index equals current index, then relevant text-part of subType added to the parent composite.
 
-5. If any of text-parts found, then algorithm goes to the step 2, otherwise, exits method
+5. If any of type found, then algorithm loops from step #2, otherwise, exits current recursion method.
 
 
 ***
