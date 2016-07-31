@@ -13,8 +13,7 @@ public class Composite extends Component implements Iterable<Component> {
     }
 
     public static Component of(Type type) {
-        Component component = new Composite(type);
-        return component;
+        return new Composite(type);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class Composite extends Component implements Iterable<Component> {
     }
 
     public Iterator<Component> iterator(Type type) {
-        Iterator<Component> it = new Iterator<Component>() {
+        return new Iterator<Component>() {
             Map<Integer, List<Component>> levels = new HashMap<>();
             List<Component> currLevel = null;
             int levelIndex = -1;
@@ -141,6 +140,5 @@ public class Composite extends Component implements Iterable<Component> {
             }
 
         };
-        return it;
     }
 }

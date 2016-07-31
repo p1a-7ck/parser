@@ -39,7 +39,7 @@ public class Ruler {
             ruler.createTypes(properties);
             return ruler;
         } catch (IOException exc) {
-
+            logger.error("File '{}' not found or file read error", fileName, exc);
         }
         return null;
     }

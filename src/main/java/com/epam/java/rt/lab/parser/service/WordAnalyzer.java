@@ -27,13 +27,8 @@ public class WordAnalyzer {
     }
 
     public static List<Map.Entry<String, Integer>> sortMapByValue(Map<String, Integer> map) {
-        List<Map.Entry<String, Integer>> result = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
-        Collections.sort(result, new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
+        List<Map.Entry<String, Integer>> result = new LinkedList<>(map.entrySet());
+        Collections.sort(result, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
         return result;
     }
 
@@ -56,13 +51,8 @@ public class WordAnalyzer {
     }
 
     public static List<Map.Entry<Integer, List<String>>> sortMapByKey(Map<Integer, List<String>> map) {
-        List<Map.Entry<Integer, List<String>>> result = new LinkedList<Map.Entry<Integer, List<String>>>(map.entrySet());
-        Collections.sort(result, new Comparator<Map.Entry<Integer, List<String>>>() {
-            @Override
-            public int compare(Map.Entry<Integer, List<String>> o1, Map.Entry<Integer, List<String>> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
+        List<Map.Entry<Integer, List<String>>> result = new LinkedList<>(map.entrySet());
+        Collections.sort(result, (o1, o2) -> o1.getKey().compareTo(o2.getKey()));
         return result;
     }
 }

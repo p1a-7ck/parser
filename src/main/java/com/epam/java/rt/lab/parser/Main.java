@@ -21,7 +21,7 @@ public class Main {
         for (Map.Entry<String, Integer> item : sortedWordCount)
             System.out.println("'" + item.getKey() + "' = " + item.getValue());
         
-        System.out.println(Leaf.toStringCached() + "\n");
+        System.out.println("\n" + Leaf.toStringCached() + "\n");
 
         Map<Integer, List<String>> wordsLength = WordAnalyzer.wordLength(component);
         List<Map.Entry<Integer, List<String>>> sortedWordLength = WordAnalyzer.sortMapByKey(wordsLength);

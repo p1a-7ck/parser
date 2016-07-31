@@ -18,8 +18,7 @@ public class Leaf extends Component {
     }
 
     public static Component of(char ch) {
-        Component component = new Leaf(ch);
-        return component;
+        return new Leaf(ch);
     }
 
     public static List<Component> of(char[] chs) {
