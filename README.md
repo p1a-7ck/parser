@@ -1,7 +1,7 @@
 # parser
 Java Lab #19, Task #2
 
-The Parser-project shows the usage of Composite design pattern, Iterable and Iterator interface implementation, Collections' sorting method. Parser algorithm based on Recursive parser, which tries to find pattern of nearest text-part of any type. Each type of text-part defined in a 'rules.properties'-file.
+The Parser-project shows the usage of Composite design pattern, Iterable and Iterator interfaces' implementation, Collections' sorting method, Leaf-object caching. Parser algorithm based on Recursive parser, which tries to find pattern of nearest text-part of any type. Each type of text-part defined in a 'rules.properties'-file.
 
 
 ***
