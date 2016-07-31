@@ -13,9 +13,9 @@ The Parser-project shows the usage of Composite design pattern, Iterable and Ite
 
 3. Checks for defined endsWith-type for all parent types, if there are any endsWith-type is defined and it's starting index equals current index, then algorithm exits resursion method up to the exact parent, which endsWith-type' starting index equals current index.
 
-4. Checks for defined subTypes contained in parent type, if any subType contains another subTypes, then method should be called recursively for that subType. If subType don't have another subTypes, then it means that subType have search patterns and it's possible to find some relevant text-part. If subType starting index equals current index, then relevant text-part of subType added to the parent composite.
+4. Checks for defined subTypes contained in parent type, if any subType contains another subTypes, then method should be called recursively for that subType. If subType don't have another subTypes, then it means that subType have patterns and it's possible to find some relevant text-part. If subType starting index equals current index, then relevant text-part of subType added to the parent composite.
 
-5. If any of type found, then algorithm loops from step #2, otherwise, exits current recursion method.
+5. If any of type are found, then algorithm loops from step #2, otherwise, exits current recursion method.
 
 
 ***
