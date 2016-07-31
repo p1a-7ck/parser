@@ -27,7 +27,7 @@ public class Parser {
         return new Parser(ruler);
     }
 
-    public Component parseFile(String fileName, boolean leafCached) {
+    public boolean readFile(String fileName) {
         StringBuilder lines = new StringBuilder();
         try {
             InputStream in = Parser.class.getClassLoader().getResourceAsStream(fileName);
@@ -36,17 +36,22 @@ public class Parser {
             while ((line = reader.readLine()) != null)
                 lines.append(line).append("\n");
             this.source = lines.append("\0").toString();
+            logger.info("Parsing from file '{}' initiated", fileName);
+            return true;
         } catch (Exception exc) {
             logger.error("File '{}' not found or file read error", fileName, exc);
         }
-        logger.info("Parsing from file '{}' initiated", fileName);
-        Component component = Composite.of(this.ruler.getRootType());
-        this.leafCached = leafCached;
-        findComponents(0, component);
-//        int findFrom = 0;
-//        while (findFrom < (this.source.length() - 1) && findFrom != -1)
-//            findFrom = findComponents(findFrom, composite);
-        return component;
+        return false;
+    }
+
+    public Component parseFile(String fileName, boolean leafCached) {
+        if (readFile(fileName)) {
+            this.leafCached = leafCached;
+            Component component = Composite.of(this.ruler.getRootType());
+            findComponents(0, component);
+            return component;
+        }
+        return null;
     }
 
     private int findTypeStart(int findFrom, Type type) {
