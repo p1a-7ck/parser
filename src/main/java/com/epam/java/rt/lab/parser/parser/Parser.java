@@ -19,7 +19,7 @@ public class Parser {
     private int jumpOutRecursion = 0;
     private boolean leafCached;
 
-    public Parser(Ruler ruler) {
+    private Parser(Ruler ruler) {
         this.ruler = ruler;
     }
 
@@ -27,7 +27,7 @@ public class Parser {
         return new Parser(ruler);
     }
 
-    public boolean readFile(String fileName) {
+    private boolean readFile(String fileName) {
         StringBuilder lines = new StringBuilder();
         try {
             InputStream in = Parser.class.getClassLoader().getResourceAsStream(fileName);

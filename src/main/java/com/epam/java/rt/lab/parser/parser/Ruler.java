@@ -14,14 +14,14 @@ import java.util.regex.Pattern;
 /**
  * parser
  */
-public class Ruler {
+public final class Ruler {
     private final static Logger logger = LoggerFactory.getLogger(Ruler.class);
     private final static int CONTAINS_KEY = 1, STARTS_WITH_KEY = 2, ENDS_WITH_KEY = 3, REGEX_START_KEY = 4, REGEX_END_KEY = 5;
     private final String[] init;
     private final Type rootType;
     private final Map<Type, Rule> rules;
 
-    public Ruler(String[] init, Type rootType) {
+    private Ruler(String[] init, Type rootType) {
         this.init = init;
         this.rootType = rootType;
         this.rules = new HashMap<>();
@@ -44,7 +44,7 @@ public class Ruler {
         return null;
     }
 
-    public static Properties readProperties(String fileName) throws IOException {
+    private static Properties readProperties(String fileName) throws IOException {
         InputStream inputStream = Ruler.class.getClassLoader().getResourceAsStream(fileName);
         Properties properties = new Properties();
         properties.load(inputStream);
@@ -92,7 +92,7 @@ public class Ruler {
         return stringBuilder;
     }
 
-    public void createTypes(Properties properties) {
+    private void createTypes(Properties properties) {
         String typeContains = properties.getProperty(this.init[0].concat(this.init[CONTAINS_KEY]));
         if (typeContains == null)
             throw new IllegalStateException("Key .contains not found for " + this.rootType.getName());

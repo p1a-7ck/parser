@@ -49,6 +49,22 @@ public class Leaf extends Component {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Leaf leaf = (Leaf) o;
+
+        return ch == leaf.ch;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) ch;
+    }
+
+    @Override
     public String toString() {
         return "Leaf{" +
                 "ch=" + ch +
