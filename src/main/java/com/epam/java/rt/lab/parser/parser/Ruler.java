@@ -28,29 +28,37 @@ public final class Ruler {
     }
 
     public static Ruler from(String fileName) {
-        try {
-            Properties properties = Ruler.readProperties(fileName);
-            String root = properties.getProperty("root");
-            if (root == null) return null;
-            String[] init = root.split(",");
-            if (init.length != 6) return null;
-            Type rootType = new Type(properties.getProperty(init[0]));
-            Ruler ruler = new Ruler(init, rootType);
-            ruler.createTypes(properties);
-            return ruler;
-        } catch (IOException exc) {
-            logger.error("File '{}' not found or file read error", fileName, exc);
-        }
-        return null;
+        Properties properties = Ruler.readProperties(fileName);
+        if (properties == null) return null;
+        String root = properties.getProperty("root");
+        if (root == null) return null;
+        String[] init = root.split(",");
+        if (init.length != 6) return null;
+        Type rootType = new Type(properties.getProperty(init[0]));
+        Ruler ruler = new Ruler(init, rootType);
+        ruler.createTypes(properties);
+        return ruler;
     }
 
-    private static Properties readProperties(String fileName) throws IOException {
-        InputStream inputStream = Ruler.class.getClassLoader().getResourceAsStream(fileName);
-        Properties properties = new Properties();
-        properties.load(inputStream);
-        inputStream.close();
-        logger.info("Properties read from file '{}'", fileName);
-        return properties;
+    private static Properties readProperties(String fileName) {
+        InputStream inputStream = null;
+        try {
+            inputStream = Ruler.class.getClassLoader().getResourceAsStream(fileName);
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            inputStream.close();
+            logger.info("Properties read from file '{}'", fileName);
+            return properties;
+        } catch (IOException exc) {
+            logger.error("File '{}' not found or file read error", fileName, exc);
+        } finally {
+            try {
+                if (inputStream != null) inputStream.close();
+            } catch (IOException exc) {
+                logger.error("InputStream close error for file '{}'", fileName, exc);
+            }
+        }
+        return null;
     }
 
     public Type getRootType() {

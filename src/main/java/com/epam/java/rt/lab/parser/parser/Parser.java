@@ -29,17 +29,28 @@ public class Parser {
 
     private boolean readFile(String fileName) {
         StringBuilder lines = new StringBuilder();
+        InputStream in = null;
+        BufferedReader reader = null;
         try {
-            InputStream in = Parser.class.getClassLoader().getResourceAsStream(fileName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            in = Parser.class.getClassLoader().getResourceAsStream(fileName);
+            reader = new BufferedReader(new InputStreamReader(in));
             String line = null;
             while ((line = reader.readLine()) != null)
                 lines.append(line).append("\n");
             this.source = lines.append("\0").toString();
+            reader.close();
+            in.close();
             logger.info("Parsing from file '{}' initiated", fileName);
             return true;
         } catch (Exception exc) {
             logger.error("File '{}' not found or file read error", fileName, exc);
+        } finally {
+            try {
+                if (reader != null) reader.close();
+                if (in != null) in.close();
+            } catch (Exception exc) {
+                logger.error("InputStream or BufferedReader close error for file '{}'", fileName, exc);
+            }
         }
         return false;
     }
